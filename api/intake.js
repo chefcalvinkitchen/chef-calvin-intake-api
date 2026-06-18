@@ -138,9 +138,9 @@ await fetch(
           {
             ownerId: customerId,
             namespace: "custom",
-            key: "membership_plan",
+            key: "membership_plan_selected",
             type: "single_line_text_field",
-            value: membership_plan_selected || ""
+            value: membership_plan || ""
           }
         ]
       }
