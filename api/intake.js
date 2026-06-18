@@ -1,11 +1,15 @@
 export default async function handler(req, res) {
 
+  if (req.method !== 'POST') {
+    return res.status(405).json({
+      error: 'Method not allowed'
+    });
+  }
+
   try {
 
-    const SHOP = process.env.SHOPIFY_SHOP;
-
-    const response = await fetch(
-      `https://${SHOP}.myshopify.com/admin/oauth/access_token`,
+    const tokenResponse = await fetch(
+      `https://${process.env.SHOPIFY_SHOP}.myshopify.com/admin/oauth/access_token`,
       {
         method: 'POST',
         headers: {
@@ -19,12 +23,52 @@ export default async function handler(req, res) {
       }
     );
 
-    const text = await response.text();
+    const tokenData = await tokenResponse.json();
 
-    return res.status(200).json({
-      status: response.status,
-      response: text
-    });
+    const accessToken = tokenData.access_token;
+
+    const { first_name, last_name, email, phone } = req.body;
+
+    const customerResponse = await fetch(
+      `https://${process.env.SHOPIFY_SHOP}.myshopify.com/admin/api/2025-01/graphql.json`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Shopify-Access-Token': accessToken
+        },
+        body: JSON.stringify({
+          query: `
+            mutation customerCreate($input: CustomerInput!) {
+              customerCreate(input: $input) {
+                customer {
+                  id
+                  firstName
+                  lastName
+                  email
+                }
+                userErrors {
+                  field
+                  message
+                }
+              }
+            }
+          `,
+          variables: {
+            input: {
+              firstName: first_name,
+              lastName: last_name,
+              email: email,
+              phone: phone
+            }
+          }
+        })
+      }
+    );
+
+    const customerData = await customerResponse.json();
+
+    return res.status(200).json(customerData);
 
   } catch (error) {
 
