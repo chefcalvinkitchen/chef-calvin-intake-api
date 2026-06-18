@@ -46,7 +46,14 @@ if (req.method === 'OPTIONS') {
 
     const accessToken = tokenData.access_token;
 
-    const { first_name, last_name, email, phone, preferred_name } = req.body;
+    const {
+      first_name,
+      last_name,
+      email,
+      preferred_name,
+      date_of_birth,
+      membership_plan
+    } = req.body;
 
     const customerResponse = await fetch(
       `https://${process.env.SHOPIFY_SHOP}.myshopify.com/admin/api/2025-01/graphql.json`,
@@ -120,6 +127,20 @@ await fetch(
             key: "preferred_name",
             type: "single_line_text_field",
             value: preferred_name || ""
+          },
+          {
+            ownerId: customerId,
+            namespace: "custom",
+            key: "date_of_birth",
+            type: "date",
+            value: date_of_birth || ""
+          },
+          {
+            ownerId: customerId,
+            namespace: "custom",
+            key: "membership_plan",
+            type: "single_line_text_field",
+            value: membership_plan || ""
           }
         ]
       }
