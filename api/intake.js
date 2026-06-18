@@ -46,6 +46,55 @@ if (req.method === 'OPTIONS') {
 
     const accessToken = tokenData.access_token;
 
+const {
+  first_name,
+  last_name,
+  email,
+  preferred_name,
+  date_of_birth,
+  membership_plan
+} = req.body;
+
+const searchResponse = await fetch(
+  `https://${process.env.SHOPIFY_SHOP}.myshopify.com/admin/api/2025-01/graphql.json`,
+  {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Shopify-Access-Token': accessToken
+    },
+    body: JSON.stringify({
+      query: `
+        query ($email: String!) {
+          customers(first: 1, query: $email) {
+            edges {
+              node {
+                id
+                email
+              }
+            }
+          }
+        }
+      `,
+      variables: {
+        email: `email:${email}`
+      }
+    })
+  }
+);
+
+const searchData = await searchResponse.json();
+
+let customerId = null;
+
+if (
+  searchData.data.customers.edges.length > 0
+) {
+  customerId =
+    searchData.data.customers.edges[0].node.id;
+}
+    
+
     const {
       first_name,
       last_name,
@@ -55,46 +104,49 @@ if (req.method === 'OPTIONS') {
       membership_plan
     } = req.body;
 
-    const customerResponse = await fetch(
-      `https://${process.env.SHOPIFY_SHOP}.myshopify.com/admin/api/2025-01/graphql.json`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Shopify-Access-Token': accessToken
-        },
-        body: JSON.stringify({
-          query: `
-            mutation customerCreate($input: CustomerInput!) {
-              customerCreate(input: $input) {
-                customer {
-                  id
-                  firstName
-                  lastName
-                  email
-                }
-                userErrors {
-                  field
-                  message
-                }
+
+if (!customerId) {
+
+  const customerResponse = await fetch(
+    `https://${process.env.SHOPIFY_SHOP}.myshopify.com/admin/api/2025-01/graphql.json`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Shopify-Access-Token': accessToken
+      },
+      body: JSON.stringify({
+        query: `
+          mutation customerCreate($input: CustomerInput!) {
+            customerCreate(input: $input) {
+              customer {
+                id
+              }
+              userErrors {
+                field
+                message
               }
             }
-          `,
-          variables: {
-            input: {
-              firstName: first_name,
-              lastName: last_name,
-              email: email
-            }
           }
-        })
-      }
-    );
-    
-const customerData = await customerResponse.json();
+        `,
+        variables: {
+          input: {
+            firstName: first_name,
+            lastName: last_name,
+            email: email
+          }
+        }
+      })
+    }
+  );
 
-const customerId =
-  customerData.data.customerCreate.customer.id;
+  const customerData =
+    await customerResponse.json();
+
+  customerId =
+    customerData.data.customerCreate.customer.id;
+}
+    
 
 await fetch(
   `https://${process.env.SHOPIFY_SHOP}.myshopify.com/admin/api/2025-01/graphql.json`,
