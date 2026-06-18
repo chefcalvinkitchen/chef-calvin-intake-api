@@ -1,47 +1,32 @@
 export default async function handler(req, res) {
 
-  res.setHeader(
-    'Access-Control-Allow-Origin',
-    'https://www.chefcalvinskitchen.com'
-  );
+  try {
 
-  res.setHeader(
-    'Access-Control-Allow-Methods',
-    'GET,POST,OPTIONS'
-  );
+    const response = await fetch(
+      `https://${process.env.SHOPIFY_STORE}/admin/oauth/access_token`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({
+          grant_type: 'client_credentials',
+          client_id: process.env.SHOPIFY_CLIENT_ID,
+          client_secret: process.env.SHOPIFY_CLIENT_SECRET
+        })
+      }
+    );
 
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'Content-Type'
-  );
+    const data = await response.json();
 
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
+    return res.status(200).json(data);
 
-  if (req.method === 'GET') {
+  } catch (error) {
 
-    return res.status(200).json({
-      success: true,
-      message: 'Chef Calvin Intake API is working'
+    return res.status(500).json({
+      error: error.message
     });
 
   }
-
-  if (req.method === 'POST') {
-
-    console.log('Form Submission:', req.body);
-
-    return res.status(200).json({
-      success: true,
-      received: true
-    });
-
-  }
-
-  return res.status(405).json({
-    success: false,
-    message: 'Method not allowed'
-  });
 
 }
