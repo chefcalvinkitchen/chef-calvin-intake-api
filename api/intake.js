@@ -52,7 +52,7 @@ if (req.method === 'OPTIONS') {
       email,
       preferred_name,
       date_of_birth,
-      membership_plan_selected
+      membership_plan
     } = req.body;
 
     const customerResponse = await fetch(
