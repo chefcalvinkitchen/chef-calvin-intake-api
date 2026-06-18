@@ -77,8 +77,7 @@ if (req.method === 'OPTIONS') {
             input: {
               firstName: first_name,
               lastName: last_name,
-              email: email,
-              phone: phone
+              email: email
             }
           }
         })
