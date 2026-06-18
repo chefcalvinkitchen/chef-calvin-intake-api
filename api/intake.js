@@ -84,10 +84,14 @@ if (req.method === 'OPTIONS') {
         })
       }
     );
+    
+const customerData = await customerResponse.json();
 
-    const customerData = await customerResponse.json();
+console.log(
+  JSON.stringify(customerData, null, 2)
+);
 
-    return res.status(200).json(customerData);
+return res.status(200).json(customerData);
 
   } catch (error) {
 
