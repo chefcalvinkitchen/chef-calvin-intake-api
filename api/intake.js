@@ -52,7 +52,7 @@ if (req.method === 'OPTIONS') {
       email,
       preferred_name,
       date_of_birth,
-      membership_plan
+      membership_plan_selected
     } = req.body;
 
     const customerResponse = await fetch(
@@ -140,7 +140,7 @@ await fetch(
             namespace: "custom",
             key: "membership_plan",
             type: "single_line_text_field",
-            value: membership_plan || ""
+            value: membership_plan_selected || ""
           }
         ]
       }
