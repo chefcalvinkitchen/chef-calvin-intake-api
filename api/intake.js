@@ -1,8 +1,8 @@
 import { URLSearchParams } from 'node:url';
 
 const SHOP = process.env.SHOPIFY_SHOP;
-const CLIENT_ID = process.env.SHOPIFY_CLIENT_ID;
-const CLIENT_SECRET = process.env.SHOPIFY_CLIENT_SECRET;
+const CLIENT_ID = f120b4e76783c30cc3b33afb41fc9598;
+const CLIENT_SECRET = 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;
 
 if (!SHOP || !CLIENT_ID || !CLIENT_SECRET) {
   throw new Error(
