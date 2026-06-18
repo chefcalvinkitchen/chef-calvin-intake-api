@@ -1,74 +1,37 @@
-import { URLSearchParams } from 'node:url';
+export default async function handler(req, res) {
 
-const SHOP = process.env.SHOPIFY_SHOP;
-const CLIENT_ID = f120b4e76783c30cc3b33afb41fc9598;
-const CLIENT_SECRET = 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;
+  try {
 
-if (!SHOP || !CLIENT_ID || !CLIENT_SECRET) {
-  throw new Error(
-    'Set SHOPIFY_SHOP, SHOPIFY_CLIENT_ID, and SHOPIFY_CLIENT_SECRET.'
-  );
-}
+    const SHOP = process.env.SHOPIFY_SHOP;
 
-let token = null;
-let tokenExpiresAt = 0;
+    const response = await fetch(
+      `https://${SHOP}.myshopify.com/admin/oauth/access_token`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({
+          grant_type: 'client_credentials',
+          client_id: process.env.SHOPIFY_CLIENT_ID,
+          client_secret: process.env.SHOPIFY_CLIENT_SECRET
+        })
+      }
+    );
 
-async function getToken() {
-  if (token && Date.now() < tokenExpiresAt - 60_000) return token;
+    const text = await response.text();
 
-  const response = await fetch(
-    `https://${chef-calvins-kitchen}.myshopify.com/admin/oauth/access_token`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({
-        grant_type: 'client_credentials',
-        client_id: CLIENT_ID,
-        client_secret: CLIENT_SECRET,
-      }),
-    }
-  );
+    return res.status(200).send({
+      status: response.status,
+      response: text
+    });
 
-  if (!response.ok) throw new Error(`Token request failed: ${response.status}`);
+  } catch (error) {
 
-  const { access_token, expires_in } = await response.json();
-  token = access_token;
-  tokenExpiresAt = Date.now() + expires_in * 1000;
-  return token;
-}
+    return res.status(500).json({
+      error: error.message
+    });
 
-async function graphql(query, variables = {}) {
-  const response = await fetch(
-    `https://${SHOP}.myshopify.com/admin/api/2025-01/graphql.json`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Shopify-Access-Token': await getToken(),
-      },
-      body: JSON.stringify({ query, variables }),
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error(`GraphQL request failed: ${response.status}`);
   }
 
-  const { data, errors } = await response.json();
-  if (errors?.length) {
-    throw new Error(`GraphQL errors: ${JSON.stringify(errors)}`);
-  }
-  return data;
 }
-
-async function main() {
-  const query =
-    '{ products(first: 3) { edges { node { id title handle } } } }';
-  const data = await graphql(query);
-  console.log('Products:', JSON.stringify(data, null, 2));
-}
-
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
