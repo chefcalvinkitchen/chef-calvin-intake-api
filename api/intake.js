@@ -46,7 +46,7 @@ if (req.method === 'OPTIONS') {
 
     const accessToken = tokenData.access_token;
 
-    const { first_name, last_name, email, phone } = req.body;
+    const { first_name, last_name, email, phone, preferred_name } = req.body;
 
     const customerResponse = await fetch(
       `https://${process.env.SHOPIFY_SHOP}.myshopify.com/admin/api/2025-01/graphql.json`,
@@ -85,6 +85,47 @@ if (req.method === 'OPTIONS') {
     );
     
 const customerData = await customerResponse.json();
+
+const customerId =
+  customerData.data.customerCreate.customer.id;
+
+await fetch(
+  `https://${process.env.SHOPIFY_SHOP}.myshopify.com/admin/api/2025-01/graphql.json`,
+  {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Shopify-Access-Token': accessToken
+    },
+    body: JSON.stringify({
+      query: `
+        mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {
+          metafieldsSet(metafields: $metafields) {
+            metafields {
+              key
+              value
+            }
+            userErrors {
+              field
+              message
+            }
+          }
+        }
+      `,
+      variables: {
+        metafields: [
+          {
+            ownerId: customerId,
+            namespace: "custom",
+            key: "preferred_name",
+            type: "single_line_text_field",
+            value: preferred_name || ""
+          }
+        ]
+      }
+    })
+  }
+);
 
 console.log(
   JSON.stringify(customerData, null, 2)
