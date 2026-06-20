@@ -85,6 +85,11 @@ const searchResponse = await fetch(
 
 const searchData = await searchResponse.json();
 
+console.log(
+  "SEARCH RESULT:",
+  JSON.stringify(searchData, null, 2)
+);
+
 let customerId = null;
 
 if (
@@ -93,6 +98,11 @@ if (
   customerId =
     searchData.data.customers.edges[0].node.id;
 }
+
+console.log(
+  "FOUND CUSTOMER:",
+  customerId
+);
     
 
 if (!customerId) {
