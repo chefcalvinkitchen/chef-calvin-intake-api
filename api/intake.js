@@ -170,7 +170,7 @@ if (!customerId) {
 }
     
 
-await fetch(
+const metafieldResponse = await fetch(
   `https://${process.env.SHOPIFY_SHOP}.myshopify.com/admin/api/2025-01/graphql.json`,
   {
     method: 'POST',
@@ -357,8 +357,10 @@ await fetch(
             namespace: "custom",
             key: "texture_preferences",
             type: "multi_line_text_field",
-            value: texture_preferences || ""
-          },
+            value: Array.isArray(texture_preferences)
+              ? texture_preferences.join(", ")
+              : texture_preferences || ""
+          }
           {
             ownerId: customerId,
             namespace: "custom",
@@ -388,6 +390,14 @@ await fetch(
       }
     })
   }
+);
+
+const metafieldData =
+  await metafieldResponse.json();
+
+console.log(
+  "METAFIELD RESULT:",
+  JSON.stringify(metafieldData, null, 2)
 );
 
 return res.status(200).json({
