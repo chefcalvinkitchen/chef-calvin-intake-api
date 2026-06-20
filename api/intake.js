@@ -50,6 +50,7 @@ const {
   first_name,
   last_name,
   email,
+  phone,
   preferred_name,
   date_of_birth,
   membership_plan,
@@ -76,6 +77,8 @@ const {
   excluded_proteins,
   additional_notes
 } = req.body;
+
+console.log("PHONE RECEIVED:", phone);
 
 const searchResponse = await fetch(
   `https://${process.env.SHOPIFY_SHOP}.myshopify.com/admin/api/2025-01/graphql.json`,
@@ -155,7 +158,8 @@ if (!customerId) {
           input: {
             firstName: first_name,
             lastName: last_name,
-            email: email
+            email: email,
+            phone: phone
           }
         }
       })
@@ -164,6 +168,11 @@ if (!customerId) {
 
   const customerData =
     await customerResponse.json();
+
+console.log(
+  "CUSTOMER CREATE RESULT:",
+  JSON.stringify(customerData, null, 2)
+);
 
   customerId =
     customerData.data.customerCreate.customer.id;
