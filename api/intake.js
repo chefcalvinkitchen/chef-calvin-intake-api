@@ -323,6 +323,66 @@ await fetch(
             key: "clinical_recommendations",
             type: "multi_line_text_field",
             value: clinical_recommendations || ""
+          },
+          {
+            ownerId: customerId,
+            namespace: "custom",
+            key: "protein_importance",
+            type: "number_integer",
+            value: String(protein_importance || 0)
+          },
+          {
+            ownerId: customerId,
+            namespace: "custom",
+            key: "gut_health_importance",
+            type: "number_integer",
+            value: String(gut_health_importance || 0)
+          },
+          {
+            ownerId: customerId,
+            namespace: "custom",
+            key: "calorie_management_importance",
+            type: "number_integer",
+            value: String(calorie_management_importance || 0)
+          },
+          {
+            ownerId: customerId,
+            namespace: "custom",
+            key: "spice_level",
+            type: "single_line_text_field",
+            value: spice_level || ""
+          },
+          {
+            ownerId: customerId,
+            namespace: "custom",
+            key: "texture_preferences",
+            type: "multi_line_text_field",
+            value: texture_preferences || ""
+          },
+          {
+            ownerId: customerId,
+            namespace: "custom",
+            key: "preferred_proteins",
+            type: "multi_line_text_field",
+            value: Array.isArray(preferred_proteins)
+              ? preferred_proteins.join(", ")
+              : preferred_proteins || ""
+          },
+          {
+            ownerId: customerId,
+            namespace: "custom",
+            key: "excluded_proteins",
+            type: "multi_line_text_field",
+            value: Array.isArray(excluded_proteins)
+              ? excluded_proteins.join(", ")
+              : excluded_proteins || ""
+          },
+          {
+            ownerId: customerId,
+            namespace: "custom",
+            key: "additional_notes",
+            type: "multi_line_text_field",
+            value: additional_notes || ""
           }
         ]
       }
