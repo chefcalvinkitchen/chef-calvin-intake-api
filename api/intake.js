@@ -56,7 +56,25 @@ const {
   delivery_window,
   delivery_access_notes,
   household_size,
-  household_ages
+  household_ages,
+  meals_needed,
+  favorite_cuisines,
+  excluded_cuisines,
+  dietary_restrictions,
+  allergies,
+  intolerances,
+  excluded_ingredients,
+  favorite_ingredients,
+  health_goals,
+  clinical_recommendations,
+  protein_importance,
+  gut_health_importance,
+  calorie_management_importance,
+  spice_level,
+  texture_preferences,
+  preferred_proteins,
+  excluded_proteins,
+  additional_notes
 } = req.body;
 
 const searchResponse = await fetch(
@@ -225,6 +243,86 @@ await fetch(
             key: "household_ages",
             type: "multi_line_text_field",
             value: household_ages || ""
+          },
+          {
+            ownerId: customerId,
+            namespace: "custom",
+            key: "meals_needed",
+            type: "multi_line_text_field",
+            value: Array.isArray(meals_needed)
+              ? meals_needed.join(", ")
+              : meals_needed || ""
+          },
+          {
+            ownerId: customerId,
+            namespace: "custom",
+            key: "favorite_cuisines",
+            type: "multi_line_text_field",
+            value: Array.isArray(favorite_cuisines)
+              ? favorite_cuisines.join(", ")
+              : favorite_cuisines || ""
+          },
+          {
+            ownerId: customerId,
+            namespace: "custom",
+            key: "excluded_cuisines",
+            type: "multi_line_text_field",
+            value: Array.isArray(excluded_cuisines)
+              ? excluded_cuisines.join(", ")
+              : excluded_cuisines || ""
+          },
+          {
+            ownerId: customerId,
+            namespace: "custom",
+            key: "dietary_restrictions",
+            type: "multi_line_text_field",
+            value: Array.isArray(dietary_restrictions)
+              ? dietary_restrictions.join(", ")
+              : dietary_restrictions || ""
+          },
+          {
+            ownerId: customerId,
+            namespace: "custom",
+            key: "allergies",
+            type: "multi_line_text_field",
+            value: allergies || ""
+          },
+          {
+            ownerId: customerId,
+            namespace: "custom",
+            key: "intolerances",
+            type: "multi_line_text_field",
+            value: intolerances || ""
+          },
+          {
+            ownerId: customerId,
+            namespace: "custom",
+            key: "excluded_ingredients",
+            type: "multi_line_text_field",
+            value: excluded_ingredients || ""
+          },
+          {
+            ownerId: customerId,
+            namespace: "custom",
+            key: "favorite_ingredients",
+            type: "multi_line_text_field",
+            value: favorite_ingredients || ""
+          },
+          {
+            ownerId: customerId,
+            namespace: "custom",
+            key: "health_goals",
+            type: "multi_line_text_field",
+            value: Array.isArray(health_goals)
+              ? health_goals.join(", ")
+              : health_goals || ""
+          },
+          {
+            ownerId: customerId,
+            namespace: "custom",
+            key: "clinical_recommendations",
+            type: "multi_line_text_field",
+            value: clinical_recommendations || ""
           }
         ]
       }
