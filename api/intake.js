@@ -190,11 +190,10 @@ await fetch(
   }
 );
 
-console.log(
-  JSON.stringify(customerData, null, 2)
-);
-
-return res.status(200).json(customerData);
+return res.status(200).json({
+  success: true,
+  customerId
+});
 
   } catch (error) {
 
