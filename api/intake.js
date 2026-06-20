@@ -95,16 +95,6 @@ if (
 }
     
 
-    const {
-      first_name,
-      last_name,
-      email,
-      preferred_name,
-      date_of_birth,
-      membership_plan
-    } = req.body;
-
-
 if (!customerId) {
 
   const customerResponse = await fetch(
