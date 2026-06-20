@@ -128,7 +128,57 @@ console.log(
   "FOUND CUSTOMER:",
   customerId
 );
-    
+
+
+if (customerId) {
+
+  const customerUpdateResponse = await fetch(
+    `https://${process.env.SHOPIFY_SHOP}.myshopify.com/admin/api/2025-01/graphql.json`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Shopify-Access-Token': accessToken
+      },
+      body: JSON.stringify({
+        query: `
+          mutation customerUpdate($input: CustomerInput!) {
+            customerUpdate(input: $input) {
+              customer {
+                id
+                firstName
+                lastName
+                email
+                phone
+              }
+              userErrors {
+                field
+                message
+              }
+            }
+          }
+        `,
+        variables: {
+          input: {
+            id: customerId,
+            firstName: first_name,
+            lastName: last_name,
+            phone: phone
+          }
+        }
+      })
+    }
+  );
+
+  const customerUpdateData =
+    await customerUpdateResponse.json();
+
+  console.log(
+    "CUSTOMER UPDATE RESULT:",
+    JSON.stringify(customerUpdateData, null, 2)
+  );
+
+}
 
 if (!customerId) {
 
