@@ -211,13 +211,13 @@ const metafieldResponse = await fetch(
             type: "single_line_text_field",
             value: preferred_name || ""
           },
-          {
+          ...(date_of_birth ? [{
             ownerId: customerId,
             namespace: "custom",
             key: "date_of_birth",
             type: "date",
-            value: date_of_birth || ""
-          },
+            value: date_of_birth
+          }] : []),
           {
             ownerId: customerId,
             namespace: "custom",
