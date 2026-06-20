@@ -168,7 +168,7 @@ if (!customerId) {
   customerId =
     customerData.data.customerCreate.customer.id;
 }
-    
+  
 
 const metafieldResponse = await fetch(
   `https://${process.env.SHOPIFY_SHOP}.myshopify.com/admin/api/2025-01/graphql.json`,
