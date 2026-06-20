@@ -69,8 +69,8 @@ export default async function handler(req, res) {
               }
             }
           `,
-          variables: {
-            query: \`phone:${phone}\`
+         variables: {
+            query: 'phone:' + phone
           }
         })
       }
