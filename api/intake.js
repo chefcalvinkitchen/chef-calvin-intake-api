@@ -360,7 +360,7 @@ const metafieldResponse = await fetch(
             value: Array.isArray(texture_preferences)
               ? texture_preferences.join(", ")
               : texture_preferences || ""
-          }
+          },
           {
             ownerId: customerId,
             namespace: "custom",
