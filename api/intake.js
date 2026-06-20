@@ -173,6 +173,17 @@ if (customerId) {
   const customerUpdateData =
     await customerUpdateResponse.json();
 
+if (
+  customerUpdateData.data.customerUpdate.userErrors.length > 0
+) {
+  throw new Error(
+    customerUpdateData.data.customerUpdate.userErrors
+      .map(error => error.message)
+      .join(", ")
+  );
+}
+  
+
   console.log(
     "CUSTOMER UPDATE RESULT:",
     JSON.stringify(customerUpdateData, null, 2)
@@ -224,11 +235,243 @@ console.log(
   JSON.stringify(customerData, null, 2)
 );
 
+  
+if (
+  customerData.data.customerCreate.userErrors.length > 0
+) {
+  throw new Error(
+    customerData.data.customerCreate.userErrors
+      .map(error => error.message)
+      .join(", ")
+  );
+}
+  
   customerId =
     customerData.data.customerCreate.customer.id;
 }
   
 
+
+      const metafields = [
+      
+        ...(preferred_name ? [{
+            ownerId: customerId,
+            namespace: "custom",
+            key: "preferred_name",
+            type: "single_line_text_field",
+            value: preferred_name
+          }] : []),
+      
+        ...(date_of_birth ? [{
+          ownerId: customerId,
+          namespace: "custom",
+          key: "date_of_birth",
+          type: "date",
+          value: date_of_birth
+        }] : []),
+      
+        {
+          ownerId: customerId,
+          namespace: "custom",
+          key: "membership_plan_selected",
+          type: "single_line_text_field",
+          value: membership_plan
+        },
+      
+        {
+          ownerId: customerId,
+          namespace: "custom",
+          key: "delivery_window",
+          type: "single_line_text_field",
+          value: delivery_window
+        },
+      
+        ...(delivery_access_notes ? [{
+          ownerId: customerId,
+          namespace: "custom",
+          key: "delivery_access_notes",
+          type: "multi_line_text_field",
+          value: delivery_access_notes
+        }] : []),
+      
+        {
+          ownerId: customerId,
+          namespace: "custom",
+          key: "household_size",
+          type: "number_integer",
+          value: String(household_size)
+        },
+      
+        ...(household_ages ? [{
+          ownerId: customerId,
+          namespace: "custom",
+          key: "household_ages",
+          type: "multi_line_text_field",
+          value: household_ages
+        }] : []),
+      
+        ...(meals_needed ? [{
+          ownerId: customerId,
+          namespace: "custom",
+          key: "meals_needed",
+          type: "multi_line_text_field",
+          value: Array.isArray(meals_needed)
+            ? meals_needed.join(", ")
+            : meals_needed
+        }] : []),
+      
+        ...(favorite_cuisines ? [{
+          ownerId: customerId,
+          namespace: "custom",
+          key: "favorite_cuisines",
+          type: "multi_line_text_field",
+          value: Array.isArray(favorite_cuisines)
+            ? favorite_cuisines.join(", ")
+            : favorite_cuisines
+        }] : []),
+      
+        ...(excluded_cuisines ? [{
+          ownerId: customerId,
+          namespace: "custom",
+          key: "excluded_cuisines",
+          type: "multi_line_text_field",
+          value: Array.isArray(excluded_cuisines)
+            ? excluded_cuisines.join(", ")
+            : excluded_cuisines
+        }] : []),
+      
+        ...(dietary_restrictions ? [{
+          ownerId: customerId,
+          namespace: "custom",
+          key: "dietary_restrictions",
+          type: "multi_line_text_field",
+          value: Array.isArray(dietary_restrictions)
+            ? dietary_restrictions.join(", ")
+            : dietary_restrictions
+        }] : []),
+      
+        {
+          ownerId: customerId,
+          namespace: "custom",
+          key: "allergies",
+          type: "multi_line_text_field",
+          value: allergies
+        },
+      
+        ...(intolerances ? [{
+          ownerId: customerId,
+          namespace: "custom",
+          key: "intolerances",
+          type: "multi_line_text_field",
+          value: intolerances
+        }] : []),
+      
+        ...(excluded_ingredients ? [{
+          ownerId: customerId,
+          namespace: "custom",
+          key: "excluded_ingredients",
+          type: "multi_line_text_field",
+          value: excluded_ingredients
+        }] : []),
+      
+        ...(favorite_ingredients ? [{
+          ownerId: customerId,
+          namespace: "custom",
+          key: "favorite_ingredients",
+          type: "multi_line_text_field",
+          value: favorite_ingredients
+        }] : []),
+      
+        ...(health_goals ? [{
+          ownerId: customerId,
+          namespace: "custom",
+          key: "health_goals",
+          type: "multi_line_text_field",
+          value: Array.isArray(health_goals)
+            ? health_goals.join(", ")
+            : health_goals
+        }] : []),
+      
+        ...(clinical_recommendations ? [{
+          ownerId: customerId,
+          namespace: "custom",
+          key: "clinical_recommendations",
+          type: "multi_line_text_field",
+          value: clinical_recommendations
+        }] : []),
+      
+        {
+          ownerId: customerId,
+          namespace: "custom",
+          key: "protein_importance",
+          type: "number_integer",
+          value: String(protein_importance)
+        },
+      
+        {
+          ownerId: customerId,
+          namespace: "custom",
+          key: "gut_health_importance",
+          type: "number_integer",
+          value: String(gut_health_importance)
+        },
+      
+        {
+          ownerId: customerId,
+          namespace: "custom",
+          key: "calorie_management_importance",
+          type: "number_integer",
+          value: String(calorie_management_importance)
+        },
+      
+        {
+          ownerId: customerId,
+          namespace: "custom",
+          key: "spice_level",
+          type: "single_line_text_field",
+          value: String(spice_level)
+        },
+      
+        ...(texture_preferences ? [{
+          ownerId: customerId,
+          namespace: "custom",
+          key: "texture_preferences",
+          type: "multi_line_text_field",
+          value: Array.isArray(texture_preferences)
+            ? texture_preferences.join(", ")
+            : texture_preferences
+        }] : []),
+      
+        ...(preferred_proteins ? [{
+          ownerId: customerId,
+          namespace: "custom",
+          key: "preferred_proteins",
+          type: "multi_line_text_field",
+          value: Array.isArray(preferred_proteins)
+            ? preferred_proteins.join(", ")
+            : preferred_proteins
+        }] : []),
+      
+        ...(excluded_proteins ? [{
+          ownerId: customerId,
+          namespace: "custom",
+          key: "excluded_proteins",
+          type: "multi_line_text_field",
+          value: Array.isArray(excluded_proteins)
+            ? excluded_proteins.join(", ")
+            : excluded_proteins
+        }] : []),
+      
+        ...(additional_notes ? [{
+          ownerId: customerId,
+          namespace: "custom",
+          key: "additional_notes",
+          type: "multi_line_text_field",
+          value: additional_notes
+        }] : [])
+      
+      ];
+    
 const metafieldResponse = await fetch(
   `https://${process.env.SHOPIFY_SHOP}.myshopify.com/admin/api/2025-01/graphql.json`,
   {
@@ -252,200 +495,9 @@ const metafieldResponse = await fetch(
           }
         }
       `,
+      
       variables: {
-        metafields: [
-          {
-            ownerId: customerId,
-            namespace: "custom",
-            key: "preferred_name",
-            type: "single_line_text_field",
-            value: preferred_name || ""
-          },
-          ...(date_of_birth ? [{
-            ownerId: customerId,
-            namespace: "custom",
-            key: "date_of_birth",
-            type: "date",
-            value: date_of_birth
-          }] : []),
-          {
-            ownerId: customerId,
-            namespace: "custom",
-            key: "membership_plan_selected",
-            type: "single_line_text_field",
-            value: membership_plan || ""
-          },
-          {
-            ownerId: customerId,
-            namespace: "custom",
-            key: "delivery_window",
-            type: "single_line_text_field",
-            value: delivery_window || ""
-          },
-          {
-            ownerId: customerId,
-            namespace: "custom",
-            key: "delivery_access_notes",
-            type: "multi_line_text_field",
-            value: delivery_access_notes || ""
-          },
-          {
-            ownerId: customerId,
-            namespace: "custom",
-            key: "household_size",
-            type: "number_integer",
-            value: household_size || "0"
-          },
-          {
-            ownerId: customerId,
-            namespace: "custom",
-            key: "household_ages",
-            type: "multi_line_text_field",
-            value: household_ages || ""
-          },
-          {
-            ownerId: customerId,
-            namespace: "custom",
-            key: "meals_needed",
-            type: "multi_line_text_field",
-            value: Array.isArray(meals_needed)
-              ? meals_needed.join(", ")
-              : meals_needed || ""
-          },
-          {
-            ownerId: customerId,
-            namespace: "custom",
-            key: "favorite_cuisines",
-            type: "multi_line_text_field",
-            value: Array.isArray(favorite_cuisines)
-              ? favorite_cuisines.join(", ")
-              : favorite_cuisines || ""
-          },
-          {
-            ownerId: customerId,
-            namespace: "custom",
-            key: "excluded_cuisines",
-            type: "multi_line_text_field",
-            value: Array.isArray(excluded_cuisines)
-              ? excluded_cuisines.join(", ")
-              : excluded_cuisines || ""
-          },
-          {
-            ownerId: customerId,
-            namespace: "custom",
-            key: "dietary_restrictions",
-            type: "multi_line_text_field",
-            value: Array.isArray(dietary_restrictions)
-              ? dietary_restrictions.join(", ")
-              : dietary_restrictions || ""
-          },
-          {
-            ownerId: customerId,
-            namespace: "custom",
-            key: "allergies",
-            type: "multi_line_text_field",
-            value: allergies || ""
-          },
-          {
-            ownerId: customerId,
-            namespace: "custom",
-            key: "intolerances",
-            type: "multi_line_text_field",
-            value: intolerances || ""
-          },
-          {
-            ownerId: customerId,
-            namespace: "custom",
-            key: "excluded_ingredients",
-            type: "multi_line_text_field",
-            value: excluded_ingredients || ""
-          },
-          {
-            ownerId: customerId,
-            namespace: "custom",
-            key: "favorite_ingredients",
-            type: "multi_line_text_field",
-            value: favorite_ingredients || ""
-          },
-          {
-            ownerId: customerId,
-            namespace: "custom",
-            key: "health_goals",
-            type: "multi_line_text_field",
-            value: Array.isArray(health_goals)
-              ? health_goals.join(", ")
-              : health_goals || ""
-          },
-          {
-            ownerId: customerId,
-            namespace: "custom",
-            key: "clinical_recommendations",
-            type: "multi_line_text_field",
-            value: clinical_recommendations || ""
-          },
-          {
-            ownerId: customerId,
-            namespace: "custom",
-            key: "protein_importance",
-            type: "number_integer",
-            value: String(protein_importance || 0)
-          },
-          {
-            ownerId: customerId,
-            namespace: "custom",
-            key: "gut_health_importance",
-            type: "number_integer",
-            value: String(gut_health_importance || 0)
-          },
-          {
-            ownerId: customerId,
-            namespace: "custom",
-            key: "calorie_management_importance",
-            type: "number_integer",
-            value: String(calorie_management_importance || 0)
-          },
-          {
-            ownerId: customerId,
-            namespace: "custom",
-            key: "spice_level",
-            type: "single_line_text_field",
-            value: spice_level || ""
-          },
-          {
-            ownerId: customerId,
-            namespace: "custom",
-            key: "texture_preferences",
-            type: "multi_line_text_field",
-            value: Array.isArray(texture_preferences)
-              ? texture_preferences.join(", ")
-              : texture_preferences || ""
-          },
-          {
-            ownerId: customerId,
-            namespace: "custom",
-            key: "preferred_proteins",
-            type: "multi_line_text_field",
-            value: Array.isArray(preferred_proteins)
-              ? preferred_proteins.join(", ")
-              : preferred_proteins || ""
-          },
-          {
-            ownerId: customerId,
-            namespace: "custom",
-            key: "excluded_proteins",
-            type: "multi_line_text_field",
-            value: Array.isArray(excluded_proteins)
-              ? excluded_proteins.join(", ")
-              : excluded_proteins || ""
-          },
-          {
-            ownerId: customerId,
-            namespace: "custom",
-            key: "additional_notes",
-            type: "multi_line_text_field",
-            value: additional_notes || ""
-          }
-        ]
+        metafields
       }
     })
   }
