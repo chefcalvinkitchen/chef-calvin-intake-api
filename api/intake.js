@@ -52,7 +52,11 @@ const {
   email,
   preferred_name,
   date_of_birth,
-  membership_plan
+  membership_plan,
+  delivery_window,
+  delivery_access_notes,
+  household_size,
+  household_ages
 } = req.body;
 
 const searchResponse = await fetch(
@@ -193,6 +197,34 @@ await fetch(
             key: "membership_plan_selected",
             type: "single_line_text_field",
             value: membership_plan || ""
+          },
+          {
+            ownerId: customerId,
+            namespace: "custom",
+            key: "delivery_window",
+            type: "single_line_text_field",
+            value: delivery_window || ""
+          },
+          {
+            ownerId: customerId,
+            namespace: "custom",
+            key: "delivery_access_notes",
+            type: "multi_line_text_field",
+            value: delivery_access_notes || ""
+          },
+          {
+            ownerId: customerId,
+            namespace: "custom",
+            key: "household_size",
+            type: "number_integer",
+            value: household_size || "0"
+          },
+          {
+            ownerId: customerId,
+            namespace: "custom",
+            key: "household_ages",
+            type: "multi_line_text_field",
+            value: household_ages || ""
           }
         ]
       }
