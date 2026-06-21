@@ -50,6 +50,7 @@ const {
   first_name,
   last_name,
   email,
+  email_marketing_consent,
   phone,
   preferred_name,
   date_of_birth,
@@ -79,6 +80,20 @@ const {
 } = req.body;
 
 console.log("PHONE RECEIVED:", phone);
+
+const marketingConsent =
+  email_marketing_consent === 'yes';
+
+
+console.log(
+  'EMAIL MARKETING CONSENT:',
+  email_marketing_consent
+);
+
+console.log(
+  'MARKETING CONSENT BOOLEAN:',
+  marketingConsent
+);
 
 const searchResponse = await fetch(
   `https://${process.env.SHOPIFY_SHOP}.myshopify.com/admin/api/2025-01/graphql.json`,
@@ -163,7 +178,15 @@ if (customerId) {
             id: customerId,
             firstName: first_name,
             lastName: last_name,
-            phone: phone
+            phone: phone,
+          
+            emailMarketingConsent: {
+              marketingState: marketingConsent
+                ? "SUBSCRIBED"
+                : "NOT_SUBSCRIBED",
+          
+              marketingOptInLevel: "SINGLE_OPT_IN"
+            }
           }
         }
       })
@@ -220,7 +243,15 @@ if (!customerId) {
             firstName: first_name,
             lastName: last_name,
             email: email,
-            phone: phone
+            phone: phone,
+          
+            emailMarketingConsent: {
+              marketingState: marketingConsent
+                ? "SUBSCRIBED"
+                : "NOT_SUBSCRIBED",
+          
+              marketingOptInLevel: "SINGLE_OPT_IN"
+            }
           }
         }
       })
